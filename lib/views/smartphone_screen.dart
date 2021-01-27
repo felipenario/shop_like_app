@@ -37,7 +37,7 @@ class _SmartphoneScreenState extends State<SmartphoneScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gerenciar Produtos'),
+        title: Text('Gerenciar Smartphones'),
         actions: [
           IconButton(
             icon: Icon(Icons.add),

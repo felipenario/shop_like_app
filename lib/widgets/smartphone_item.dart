@@ -17,7 +17,7 @@ class SmartphoneItem extends StatelessWidget {
       leading: CircleAvatar(
         backgroundImage: NetworkImage(smartphone.imageUrl),
       ),
-      title: Text(smartphone.name),
+      title: Text(smartphone.model),
       trailing: Container(
         width: 100,
         child: Row(

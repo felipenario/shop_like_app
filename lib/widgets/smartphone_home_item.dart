@@ -43,7 +43,7 @@ class SmartphoneHomeItem extends StatelessWidget {
                       horizontal: 20,
                     ),
                     child: Text(
-                      _smartphone.brand + " " + _smartphone.name,
+                      _smartphone.brand + " " + _smartphone.model,
                       style: TextStyle(
                         fontSize: 26,
                         color: Colors.white,

@@ -122,7 +122,7 @@ class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      initialValue: !_isEditing ? null : _smartphone.name,
+                      initialValue: !_isEditing ? null : _smartphone.model,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         labelText: "Modelo do Smartphone",
@@ -130,14 +130,14 @@ class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
                       validator: (value) {
                         bool isEmpty = value.trim().isEmpty;
                         if (isEmpty) {
-                          return 'Informe o nome do smartphone!';
+                          return 'Informe o modelo do smartphone!';
                         }
 
                         return null;
                       },
                       onSaved: (value) {
                         setState(() {
-                          _smartphone.name = value;
+                          _smartphone.model = value;
                         });
                       },
                     ),

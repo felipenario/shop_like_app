@@ -1,17 +1,17 @@
 class Smartphone {
-  String _name;
+  String _model;
   String _brand;
   double _price;
   String _imageUrl;
 
   Smartphone();
 
-  String get name {
-    return _name;
+  String get model {
+    return _model;
   }
 
-  set name(String newName) {
-    _name = newName;
+  set model(String newName) {
+    _model = newName;
   }
   String get brand {
     return _brand;
