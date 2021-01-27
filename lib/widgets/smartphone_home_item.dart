@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shop_like_app/models/smartphone.dart';
 
-class ProductItem extends StatelessWidget {
+class SmartphoneHomeItem extends StatelessWidget {
   final Smartphone _smartphone;
 
-  ProductItem(this._smartphone);
+  SmartphoneHomeItem(this._smartphone);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class ProductItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        elevation: 4,
+        elevation: 5,
         margin: const EdgeInsets.all(10),
         child: Column(
           children: [
@@ -26,8 +26,8 @@ class ProductItem extends StatelessWidget {
                     topRight: Radius.circular(15),
                   ),
                   child: Image.network(
-                    "https://www.oficinadanet.com.br/imagens/post/30212/mi10-full3novo.jpg",
-                    height: 250,
+                    _smartphone.imageUrl,
+                    height: 400,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
@@ -43,7 +43,7 @@ class ProductItem extends StatelessWidget {
                       horizontal: 20,
                     ),
                     child: Text(
-                      _smartphone.name,
+                      _smartphone.brand + " " + _smartphone.name,
                       style: TextStyle(
                         fontSize: 26,
                         color: Colors.white,
@@ -58,11 +58,11 @@ class ProductItem extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(20),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.monetization_on),
+                      Icon(Icons.monetization_on, color: Colors.green),
                       SizedBox(width: 6),
                       Text('R\$${_smartphone.price}')
                     ],

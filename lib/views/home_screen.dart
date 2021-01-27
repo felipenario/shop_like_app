@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shop_like_app/models/smartphone.dart';
+import 'package:shop_like_app/utils/app_routes.dart';
 import 'package:shop_like_app/views/smartphone_screen.dart';
-import 'package:shop_like_app/widgets/app_drawer.dart';
-import 'package:shop_like_app/widgets/product_item.dart';
+import 'package:shop_like_app/widgets/smartphone_home_item.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -18,6 +18,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _editSmartphone(Smartphone smartphone, int index){
+    setState(() {
+      _smartphones[index] = smartphone;
+    });
+  }
+
+  void _removeSmartphone(int index){
+    setState(() {
+      _smartphones.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (ctx) => SmartphoneScreen(_addSmartphone),
+                  settings: RouteSettings(name: AppRoutes.SMARTPHONE_SCREEN),
+                  builder: (ctx) => SmartphoneScreen(onSubmit: _addSmartphone, onEdit: _editSmartphone, onDelete: _removeSmartphone, smartphones: _smartphones),
                 ),
               );
             },
@@ -40,11 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: ListView.builder(
           itemCount: _smartphones.length,
           itemBuilder: (context, index) {
-            return ProductItem(_smartphones[index]);
+            return SmartphoneHomeItem(_smartphones[index]);
           },
       ),
-      drawer: AppDrawer(),
-      drawerEnableOpenDragGesture: true,
     );
   }
 }
