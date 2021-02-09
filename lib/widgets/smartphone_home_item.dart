@@ -1,21 +1,105 @@
 import 'package:flutter/material.dart';
 import 'package:shop_like_app/models/smartphone.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SmartphoneHomeItem extends StatelessWidget {
   final Smartphone _smartphone;
 
   SmartphoneHomeItem(this._smartphone);
 
+  _showModalBottomSheet(BuildContext context, Smartphone smartphone){
+    showModalBottomSheet(
+      context: context,
+      builder: (context){
+        return Container(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.email),
+                title: Text("Enviar por email"),
+                onTap: () async {
+                  _launchInEmail(smartphone, context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.sms),
+                title: Text("Enviar por SMS"),
+                onTap: () async {
+                  _launchInSms(smartphone, context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _launchInSms(Smartphone smartphone, BuildContext context) async {
+    final Uri params = Uri(
+      scheme: 'sms',
+      path: '+553499999-8888',
+      queryParameters: {
+        'body': 'Smartphone: ${smartphone.brand} ${smartphone.model} Preço: ${smartphone.price}',
+      },
+    );
+    final url = params.toString();
+    if(await canLaunch(url)){
+      await launch(url);
+    }else{
+      _showErrorDialog(context, "Erro ao enviar SMS");
+    }
+  }
+
+  Future<void> _launchInEmail(Smartphone smartphone, BuildContext context) async {
+    final Uri params = Uri(
+      scheme: 'mailto',
+      path: 'felipenario1@gmail.com',
+      queryParameters: {
+        'subject': 'Detalhes do Smartphone',
+        'body': 'Smartphone: ${smartphone.brand} ${smartphone.model} Preço: ${smartphone.price}',
+      },
+    );
+    final url = params.toString();
+    if(await canLaunch(url)){
+      await launch(url);
+    }else{
+      _showErrorDialog(context, "Erro ao enviar email");
+    }
+  }
+
+  _showErrorDialog(BuildContext context, String msg){
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Erro!"),
+          content: Text(msg),
+          actions: [
+            FlatButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+              child: Text("Fechar"),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => {},
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        elevation: 5,
-        margin: const EdgeInsets.all(10),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      margin: const EdgeInsets.all(10),
+      child: InkWell(
+        onTap: (){
+          _showModalBottomSheet(context, _smartphone);
+        },
         child: Column(
           children: [
             Stack(
@@ -25,8 +109,8 @@ class SmartphoneHomeItem extends StatelessWidget {
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                   ),
-                  child: Image.network(
-                    _smartphone.imageUrl,
+                  child: Image.file(
+                    _smartphone.image,
                     height: 400,
                     width: double.infinity,
                     fit: BoxFit.cover,

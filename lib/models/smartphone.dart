@@ -1,8 +1,10 @@
+import 'dart:io';
+
 class Smartphone {
   String _model;
   String _brand;
   double _price;
-  String _imageUrl;
+  File _image;
 
   Smartphone();
 
@@ -29,12 +31,12 @@ class Smartphone {
     _price = newPrice;
   }
 
-  String get imageUrl {
-    return _imageUrl;
+  File get image {
+    return _image;
   }
 
-  set imageUrl(String newImageUrl) {
-    _imageUrl = newImageUrl;
+  set image(File newImage) {
+    _image = newImage;
   }
 
 }

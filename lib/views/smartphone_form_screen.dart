@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shop_like_app/models/smartphone.dart';
 import 'package:shop_like_app/utils/app_routes.dart';
 
@@ -16,13 +18,14 @@ class SmartphoneFormScreen extends StatefulWidget {
 
 class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
   final _form = GlobalKey<FormState>();
-  final TextEditingController _imageTextEditingController = TextEditingController();
+  final picker = ImagePicker();
   Smartphone _smartphone = Smartphone();
   bool _isEditing = false;
 
   _submitForm() {
     bool isValid = _form.currentState.validate();
-    if (!isValid) {
+    if (!isValid && _smartphone.image == null) {
+      _showImageErrorDialog();
       return;
     }
     _form.currentState.save();
@@ -34,12 +37,79 @@ class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
     Navigator.of(context).popUntil(ModalRoute.withName(AppRoutes.SMARTPHONE_SCREEN));
   }
 
+  _getImageFromGallery() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    if(pickedFile != null){
+      setState(() {
+        _smartphone.image = File(pickedFile.path);
+      });
+      Navigator.pop(context);
+    }
+  }
+
+  _getImageFromCamera() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    if(pickedFile != null){
+      setState(() {
+        _smartphone.image = File(pickedFile.path);
+      });
+      Navigator.pop(context);
+    }
+  }
+
+  _showModalBottomSheet(){
+    showModalBottomSheet(
+      context: context,
+      builder: (context){
+        return Container(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.add_photo_alternate),
+                title: Text("Selecionar foto da galeria"),
+                onTap: () async {
+                  await _getImageFromGallery();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.add_a_photo),
+                title: Text("Tirar foto com a camera"),
+                onTap: () async {
+                  await _getImageFromCamera();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  _showImageErrorDialog(){
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Erro!"),
+            content: Text("Adicione uma imagem ao anúncio!"),
+            actions: [
+              FlatButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Fechar"),
+              )
+            ],
+          );
+        },
+    );
+  }
+
   @override
   void initState() {
     if(widget.smartphone != null){
       _isEditing = true;
       _smartphone = widget.smartphone;
-      _imageTextEditingController.text = _smartphone.imageUrl;
     }
     super.initState();
   }
@@ -69,54 +139,33 @@ class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
                           color: Theme.of(context).primaryColor,
                         ),
                         height: MediaQuery.of(context).size.height * 0.4,
-                        child: _smartphone.imageUrl != "" && _smartphone.imageUrl != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(25),
-                                child: Image.network(
-                                  _smartphone.imageUrl,
-                                  height: 250,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
+                        child: _smartphone.image != null
+                            ? InkWell(
+                              borderRadius: BorderRadius.circular(25),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: Image.file(
+                                    _smartphone.image,
+                                    height: 250,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              )
-                            : Icon(
-                                Icons.image_not_supported,
-                                size: 100,
+                              onTap: (){
+                                _showModalBottomSheet();
+                              },
+                            )
+                            : IconButton(
+                                icon: Icon(
+                                  Icons.add_photo_alternate,
+                                  size: 100,
+                                ),
+                                onPressed: (){
+                                  _showModalBottomSheet();
+                                },
                                 color: Theme.of(context).accentColor,
                               ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _imageTextEditingController,
-                      decoration: InputDecoration(
-                        labelText: "URL",
-                        prefixIcon: Icon(
-                          Icons.image,
-                            color: Theme.of(context).primaryColor,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                              Icons.add,
-                              color: Theme.of(context).primaryColor,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _smartphone.imageUrl = _imageTextEditingController.text;
-                            });
-                          },
-                        ),
-                      ),
-                      validator: (value) {
-                        bool isEmpty = value.trim().isEmpty;
-                        bool objectValue = _smartphone.imageUrl == "" || _smartphone.imageUrl == null;
-                        if (isEmpty || objectValue) {
-                          return "Digite uma URL para a imagem do celular! \nOBS: Lembre-se de clicar no botão + para \nconfirmar a imagem a ser usada!";
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   Padding(

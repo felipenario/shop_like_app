@@ -15,7 +15,7 @@ class SmartphoneItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(smartphone.imageUrl),
+        backgroundImage: FileImage(smartphone.image),
       ),
       title: Text(smartphone.model),
       trailing: Container(
