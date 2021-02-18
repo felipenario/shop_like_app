@@ -1,12 +1,32 @@
 import 'dart:io';
 
-class Smartphone {
+import 'package:hive/hive.dart';
+
+part 'smartphone.g.dart';
+
+
+@HiveType(typeId: 1)
+class Smartphone extends HiveObject {
+  @HiveField(0)
+  String _id;
+  @HiveField(1)
   String _model;
+  @HiveField(2)
   String _brand;
+  @HiveField(3)
   double _price;
-  File _image;
+  @HiveField(4)
+  String _imagePath;
 
   Smartphone();
+
+  String get id {
+    return _id;
+  }
+
+  set id(String newId){
+    _id = newId;
+  }
 
   String get model {
     return _model;
@@ -31,12 +51,12 @@ class Smartphone {
     _price = newPrice;
   }
 
-  File get image {
-    return _image;
+  String get imagePath {
+    return _imagePath;
   }
 
-  set image(File newImage) {
-    _image = newImage;
+  set imagePath(String newImage) {
+    _imagePath = newImage;
   }
 
 }

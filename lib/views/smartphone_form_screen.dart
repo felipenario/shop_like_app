@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shop_like_app/models/smartphone.dart';
 import 'package:shop_like_app/utils/app_routes.dart';
+import 'package:path/path.dart' as DartPath;
 
 class SmartphoneFormScreen extends StatefulWidget {
   final void Function(Smartphone) onSubmit;
@@ -24,12 +27,13 @@ class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
 
   _submitForm() {
     bool isValid = _form.currentState.validate();
-    if (!isValid && _smartphone.image == null) {
+    if (!isValid && _smartphone.imagePath == null) {
       _showImageErrorDialog();
       return;
     }
     _form.currentState.save();
     if(!_isEditing){
+      _smartphone.id = Random().nextDouble().toString();
       widget.onSubmit(_smartphone);
     }else{
       widget.onEdit(_smartphone, widget.index);
@@ -39,9 +43,15 @@ class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
 
   _getImageFromGallery() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    File tmpPickedFile = File(pickedFile.path);
+    final Directory tmpDir = await getApplicationDocumentsDirectory();
+    final String dirPath = tmpDir.path;
+    final String fileName = DartPath.basename(pickedFile.path);
+    final String fileExtension = DartPath.extension(pickedFile.path);
+    tmpPickedFile = await tmpPickedFile.copy('$dirPath/$fileName$fileExtension');
     if(pickedFile != null){
       setState(() {
-        _smartphone.image = File(pickedFile.path);
+        _smartphone.imagePath = tmpPickedFile.path;
       });
       Navigator.pop(context);
     }
@@ -49,9 +59,15 @@ class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
 
   _getImageFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
+    File tmpPickedFile = File(pickedFile.path);
+    final Directory tmpDir = await getApplicationDocumentsDirectory();
+    final String dirPath = tmpDir.path;
+    final String fileName = DartPath.basename(pickedFile.path);
+    final String fileExtension = DartPath.extension(pickedFile.path);
+    tmpPickedFile = await tmpPickedFile.copy('$dirPath/$fileName$fileExtension');
     if(pickedFile != null){
       setState(() {
-        _smartphone.image = File(pickedFile.path);
+        _smartphone.imagePath = tmpPickedFile.path;
       });
       Navigator.pop(context);
     }
@@ -139,13 +155,13 @@ class _SmartphoneFormScreenState extends State<SmartphoneFormScreen> {
                           color: Theme.of(context).primaryColor,
                         ),
                         height: MediaQuery.of(context).size.height * 0.4,
-                        child: _smartphone.image != null
+                        child: _smartphone.imagePath != null
                             ? InkWell(
                               borderRadius: BorderRadius.circular(25),
                               child: ClipRRect(
                                   borderRadius: BorderRadius.circular(25),
                                   child: Image.file(
-                                    _smartphone.image,
+                                    File(_smartphone.imagePath),
                                     height: 250,
                                     width: double.infinity,
                                     fit: BoxFit.cover,

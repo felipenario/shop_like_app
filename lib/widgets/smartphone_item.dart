@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shop_like_app/models/smartphone.dart';
 import 'package:shop_like_app/utils/app_routes.dart';
@@ -15,7 +17,7 @@ class SmartphoneItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundImage: FileImage(smartphone.image),
+        backgroundImage: FileImage(File(smartphone.imagePath)),
       ),
       title: Text(smartphone.model),
       trailing: Container(

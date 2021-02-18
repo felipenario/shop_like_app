@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shop_like_app/models/smartphone.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -110,7 +112,7 @@ class SmartphoneHomeItem extends StatelessWidget {
                     topRight: Radius.circular(15),
                   ),
                   child: Image.file(
-                    _smartphone.image,
+                    File(_smartphone.imagePath),
                     height: 400,
                     width: double.infinity,
                     fit: BoxFit.cover,
